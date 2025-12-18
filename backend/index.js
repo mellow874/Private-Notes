@@ -65,20 +65,24 @@ const authMiddleware = async (req, res, next) => {
  * CREATE NOTE
  */
 app.post("/notes", authMiddleware, async (req, res) => {
+  console.log("RECEIVED BODY:", req.body);
+
   const { title, description } = req.body;
 
   const { error } = await supabase.from("notes").insert({
     title,
-    description,
+    content: description, // 🔥 FIX IS RIGHT HERE
     user_id: req.user.id,
   });
 
   if (error) {
+    console.error("Insert error:", error);
     return res.status(400).json({ error: error.message });
   }
 
   res.json({ success: true });
 });
+
 
 /**
  * GET NOTES
@@ -110,9 +114,12 @@ app.put("/notes/:id", authMiddleware, async (req, res) => {
 
   const { data, error } = await supabase
     .from("notes")
-    .update({ title, description })
+    .update({
+      title,
+      content: description,
+    })
     .eq("id", id)
-    .eq("user_id", req.user.id) // security
+    .eq("user_id", req.user.id)
     .select()
     .single();
 
@@ -120,13 +127,8 @@ app.put("/notes/:id", authMiddleware, async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 
-  res.json({
-    success: true,
-    note: data,
-  });
+  res.json({ success: true, note: data });
 });
-
-
 
 
 // Delete Note
