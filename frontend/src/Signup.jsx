@@ -22,7 +22,7 @@ function Signup() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-black">
       <div className="bg-neutral-800 p-6 rounded w-full max-w-sm">
-        <h2 className="text-2xl font-semibold mb-4">Register</h2>
+        <h2 className="text-2xl text-white font-semibold mb-4">Register</h2>
 
         <form onSubmit={handleSubmit}>
           {/* Name */}
@@ -32,7 +32,7 @@ function Signup() {
               type="text"
               placeholder="Enter Name"
               autoComplete="off"
-              className="w-full border border-gray-300 px-3 text-white py-2 focus:outline-none focus:ring-2 focus:ring-neutral-800"
+              className="w-full border border-gray-300 px-3 text-white py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-neutral-800"
               onChange={(e) => setName(e.target.value)}
             />
           </div>
@@ -44,7 +44,7 @@ function Signup() {
               type="text"
               placeholder="Enter Email"
               autoComplete="off"
-              className="w-full border border-gray-300 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-800"
+              className="w-full border border-gray-300 text-white px-3 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-neutral-800"
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -74,7 +74,7 @@ function Signup() {
         <Link
             to="/login"
             className="block text-center mt-2 border border-gray-300 rounded-2xl bg-neutral-800 py-2
-             text-gray-800 no-underline hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] hover:text-black transition"
+             text-white no-underline hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] hover:text-black transition"
             >
             Login
         </Link>

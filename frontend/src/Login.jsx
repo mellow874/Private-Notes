@@ -85,7 +85,7 @@ function Login() {
 
         <Link
           to="/register"
-          className="block w-full text-center rounded-2xl border mt-2 bg-neutral-800 text-gray-800
+          className="block w-full text-center rounded-2xl border mt-2 bg-neutral-800 text-white
                      py-2 font-semibold hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] transition no-underline"
         >
           Sign Up
