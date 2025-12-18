@@ -7,11 +7,14 @@ function Signup() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_BACKEND_URL;
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3002/register", { name, email, password })
+      .post(`${API_URL}/register`, { name, email, password })
       .then((res) => {
         console.log(res);
         navigate("/login");
