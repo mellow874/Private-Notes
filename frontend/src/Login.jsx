@@ -8,7 +8,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
-   const API_URL = import.meta.env.VITE_BACKEND_URL;
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,8 +19,7 @@ function Login() {
         password,
       });
 
-      
-
+      // ✅ Ensure user and token exist
       if (res.data?.user && res.data?.token) {
         // ✅ Store Supabase access token
         localStorage.setItem("token", res.data.token);
@@ -30,9 +29,11 @@ function Login() {
 
         // ✅ Redirect
         navigate("/notepad");
+      } else {
+        alert("Login failed. Please try again.");
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error:", error.response || error);
       alert("Invalid email or password");
     }
   };
@@ -45,7 +46,9 @@ function Login() {
         <form onSubmit={handleSubmit}>
           {/* Email */}
           <div className="mb-4">
-            <label className="block mb-1 rounded-2xl font-semibold text-white">Email</label>
+            <label className="block mb-1 rounded-2xl font-semibold text-white">
+              Email
+            </label>
             <input
               type="email"
               placeholder="Enter Email"
@@ -60,7 +63,9 @@ function Login() {
 
           {/* Password */}
           <div className="mb-4">
-            <label className="block mb-1 text-white font-semibold">Password</label>
+            <label className="block mb-1 text-white font-semibold">
+              Password
+            </label>
             <input
               type="password"
               placeholder="Enter Password"

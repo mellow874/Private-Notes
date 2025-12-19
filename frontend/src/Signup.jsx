@@ -7,9 +7,7 @@ function Signup() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const navigate = useNavigate();
-    const API_URL = import.meta.env.VITE_BACKEND_URL;
-
-
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -75,11 +73,11 @@ function Signup() {
         <p className="text-center mt-4">Already have an account?</p>
 
         <Link
-            to="/login"
-            className="block text-center mt-2 border border-gray-300 rounded-2xl bg-neutral-800 py-2
+          to="/login"
+          className="block text-center mt-2 border border-gray-300 rounded-2xl bg-neutral-800 py-2
              text-white no-underline hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] hover:text-black transition"
-            >
-            Login
+        >
+          Login
         </Link>
       </div>
     </div>

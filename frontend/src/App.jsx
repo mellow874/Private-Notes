@@ -11,9 +11,6 @@ import NoteCard from "./components/NoteCard";
 import NotesModal from "./components/NotesModal";
 import WelcomeText from "./components/WelcomeText";
 
-// Backend API URL from environment variables
-const API_URL = import.meta.env.VITE_BACKEND_URL;
-
 function App() {
   // Modal visibility state
   const [isModalOpen, setModalOpen] = useState(false);
@@ -26,6 +23,10 @@ function App() {
 
   // Toggle between welcome screen and notes view
   const [showNotes, setShowNotes] = useState(false);
+
+  // Backend API URL from environment variables
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+  console.log("API_URL:", API_URL);
 
   // Auth token stored after login
   const token = localStorage.getItem("token");
@@ -54,7 +55,7 @@ function App() {
 
       setNotes(data.notes);
     } catch (err) {
-      console.error("Failed to fetch notes:", err);
+      console.error("Failed to fetch notes:", err.response || err);
     }
   };
 
@@ -88,6 +89,11 @@ function App() {
    * Create a new note
    */
   const addNote = async (title, description) => {
+    if (!token) {
+      console.error("No token found, cannot add note!");
+      return;
+    }
+
     try {
       await axios.post(
         `${API_URL}/notes`,
@@ -102,7 +108,7 @@ function App() {
       fetchNotes();
       closeModal();
     } catch (err) {
-      console.error("Failed to add note:", err);
+      console.error("Failed to add note:", err.response || err);
     }
   };
 
@@ -110,6 +116,11 @@ function App() {
    * Update an existing note
    */
   const editNote = async (id, title, description) => {
+    if (!token) {
+      console.error("No token found, cannot edit note!");
+      return;
+    }
+
     try {
       await axios.put(
         `${API_URL}/notes/${id}`,
@@ -124,7 +135,7 @@ function App() {
       fetchNotes();
       closeModal();
     } catch (err) {
-      console.error("Failed to edit note:", err);
+      console.error("Failed to edit note:", err.response || err);
     }
   };
 
@@ -132,6 +143,11 @@ function App() {
    * Delete a note by ID
    */
   const deleteNote = async (id) => {
+    if (!token) {
+      console.error("No token found, cannot delete note!");
+      return;
+    }
+
     try {
       await axios.delete(`${API_URL}/notes/${id}`, {
         headers: {
@@ -141,7 +157,7 @@ function App() {
 
       fetchNotes();
     } catch (err) {
-      console.error("Failed to delete note:", err);
+      console.error("Failed to delete note:", err.response || err);
     }
   };
 
