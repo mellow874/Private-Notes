@@ -25,7 +25,6 @@ function App() {
   const [showNotes, setShowNotes] = useState(false);
 
   // Backend API URL from environment variables
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
   console.log("API_URL:", import.meta.env.VITE_BACKEND_URL);
 
   // Auth token stored after login
