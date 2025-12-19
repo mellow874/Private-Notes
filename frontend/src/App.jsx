@@ -11,6 +11,9 @@ import NoteCard from "./components/NoteCard";
 import NotesModal from "./components/NotesModal";
 import WelcomeText from "./components/WelcomeText";
 
+// Backend API URL from environment variables
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
 function App() {
   // Modal visibility state
   const [isModalOpen, setModalOpen] = useState(false);
@@ -23,9 +26,6 @@ function App() {
 
   // Toggle between welcome screen and notes view
   const [showNotes, setShowNotes] = useState(false);
-
-  // Backend API URL from environment variables
-  console.log("API_URL:", import.meta.env.VITE_BACKEND_URL);
 
   // Auth token stored after login
   const token = localStorage.getItem("token");
