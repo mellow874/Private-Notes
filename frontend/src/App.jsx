@@ -178,7 +178,7 @@ function App() {
                 />
 
                 {/* Main content area */}
-                <div className="bg-black w-full relative">
+                <div className="bg-purple-900 w-full relative">
                   {/* Welcome screen */}
                   {!showNotes && <WelcomeText />}
 

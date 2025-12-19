@@ -43,7 +43,7 @@ export default function Sidebar({ onViewAllNotes, onAddNote }) {
 
   return (
     <aside
-      className={`h-screen bg-[#F4F5FA] border-r flex flex-col transition-all duration-300 ${
+      className={`h-screen bg-black text-white border-r flex flex-col transition-all duration-300 ${
         expanded ? "w-64" : "w-16"
       }`}
     >
@@ -83,7 +83,7 @@ export default function Sidebar({ onViewAllNotes, onAddNote }) {
         {/* Profile button toggles dropdown */}
         <button
           onClick={() => setProfileOpen((v) => !v)}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-indigo-50"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-indigo-50 hover:text-gray-900"
         >
           <UserCircle size={26} />
           {expanded && (
@@ -97,11 +97,11 @@ export default function Sidebar({ onViewAllNotes, onAddNote }) {
         {profileOpen && expanded && (
           <div className="absolute bottom-16 left-3 right-3 bg-white rounded-md shadow-md p-3 text-sm">
             {/* Display user's name */}
-            <p className="font-medium">
+            <p className="font-medium text-gray-900">
               {user?.user_metadata?.name || "User"}
             </p>
             {/* Display user's email */}
-            <p className="text-xs text-gray-500 mb-3">{user?.email}</p>
+            <p className="text-xs text-gray-900 mb-3">{user?.email}</p>
 
             {/* Logout button */}
             <button
