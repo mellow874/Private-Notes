@@ -1,16 +1,10 @@
-// Core React imports
 import React, { useState, useEffect } from "react";
-
-// React Router for client-side routing
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 // Axios for HTTP requests
 import axios from "axios";
-
 // Pages
 import Signup from "./Signup";
 import Login from "./Login";
-
 // Components
 import Sidebar from "./components/Sidebar";
 import NoteCard from "./components/NoteCard";
@@ -20,13 +14,10 @@ import WelcomeText from "./components/WelcomeText";
 function App() {
   // Modal visibility state
   const [isModalOpen, setModalOpen] = useState(false);
-
   // Notes data state
   const [notes, setNotes] = useState([]);
-
   // Currently selected note (for editing)
   const [currentNote, setCurrentNote] = useState(null);
-
   // Search input state
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -35,6 +26,7 @@ function App() {
 
   // Backend API URL from environment variables
   const API_URL = import.meta.env.VITE_BACKEND_URL;
+  console.log("API_URL:", import.meta.env.VITE_BACKEND_URL);
 
   // Auth token stored after login
   const token = localStorage.getItem("token");
