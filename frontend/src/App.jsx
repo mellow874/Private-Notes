@@ -75,7 +75,7 @@ function NotepadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div className="min-h-screen bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500">
       {/* TOP BAR */}
       <div className="flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md px-6 py-4 shadow-sm">
         <input

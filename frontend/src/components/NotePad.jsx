@@ -20,7 +20,7 @@ export default function NotePad({ value, onChange, ...props }) {
     return (
         <div className='flex h-screen'>
             {/* Outer container*/}
-            <div className="flex-1 w-full flex justify-center bg-black -200 px-6 py-24 sm:py-32 lg:px-8">
+            <div className="flex-1 w-full flex justify-center bg-black -100 px-6 py-24 sm:py-32 lg:px-8">
                 {/* Inner container*/}
                 <div className='w-175 h-full contact bg-white p-8'>
 
