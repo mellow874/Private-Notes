@@ -11,6 +11,9 @@ import WelcomeText from "./components/WelcomeText";
 import { useAuth } from "./context/ContextProvider";
 import { supabase } from "./supabase";
 
+// 🌐 Set your backend URL once here
+const BACKEND_URL = "https://private-notes-dzpw.onrender.com";
+
 function NotepadPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -24,12 +27,17 @@ function NotepadPage() {
 
   const token = localStorage.getItem("token");
 
+  // 🔄 Fetch notes from backend
   const fetchNotes = async () => {
     if (!token) return;
-    const { data } = await axios.get("http://localhost:3002/notes", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setNotes(data.notes);
+    try {
+      const { data } = await axios.get(`${BACKEND_URL}/notes`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNotes(data.notes);
+    } catch (error) {
+      console.error("Failed to fetch notes:", error.message);
+    }
   };
 
   useEffect(() => {
@@ -47,31 +55,49 @@ function NotepadPage() {
     setIsModalOpen(true);
   };
 
+  // ➕ Add note
   const addNote = async (title, description) => {
-    await axios.post(
-      "http://localhost:3002/notes",
-      { title, description },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    fetchNotes();
-    setIsModalOpen(false);
+    try {
+      await axios.post(
+        `${BACKEND_URL}/notes`,
+        { title, description },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchNotes();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to add note:", error.message);
+      alert("Cannot reach server. Make sure backend is running.");
+    }
   };
 
+  // ✏️ Edit note
   const editNote = async (id, title, description) => {
-    await axios.put(
-      `http://localhost:3002/notes/${id}`,
-      { title, description },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    fetchNotes();
-    setIsModalOpen(false);
+    try {
+      await axios.put(
+        `${BACKEND_URL}/notes/${id}`,
+        { title, description },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchNotes();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to edit note:", error.message);
+      alert("Cannot reach server.");
+    }
   };
 
+  // 🗑 Delete note
   const deleteNote = async (id) => {
-    await axios.delete(`http://localhost:3002/notes/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    fetchNotes();
+    try {
+      await axios.delete(`${BACKEND_URL}/notes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchNotes();
+    } catch (error) {
+      console.error("Failed to delete note:", error.message);
+      alert("Cannot reach server.");
+    }
   };
 
   return (
