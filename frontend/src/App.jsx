@@ -1,254 +1,168 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-// Axios for HTTP requests
 import axios from "axios";
-// Pages
+
 import Signup from "./Signup";
 import Login from "./Login";
-// Components
-import Sidebar from "./components/Sidebar";
+
+import WelcomeText from "./components/WelcomeText";
 import NoteCard from "./components/NoteCard";
 import NotesModal from "./components/NotesModal";
-import WelcomeText from "./components/WelcomeText";
+
+import { useAuth } from "./context/ContextProvider";
+import { supabase } from "./supabase";
 
 function App() {
-  // Modal visibility state
-  const [isModalOpen, setModalOpen] = useState(false);
-  // Notes data state
+  const { user } = useAuth();
+
   const [notes, setNotes] = useState([]);
-  // Currently selected note (for editing)
-  const [currentNote, setCurrentNote] = useState(null);
-  // Search input state
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Toggle between welcome screen and notes view
   const [showNotes, setShowNotes] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState(null);
 
-  // Backend API URL from environment variables
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
-  console.log("API_URL:", API_URL);
+  const [profileOpen, setProfileOpen] = useState(false);
 
-  // Auth token stored after login
-  const token = localStorage.getItem("token");
-
-  /**
-   * Close the add/edit note modal
-   * and reset the current note state
-   */
-  const closeModal = () => {
-    setModalOpen(false);
-    setCurrentNote(null);
-  };
-
-  /**
-   * Fetch all notes for the logged-in user
-   */
+  // Fetch notes
   const fetchNotes = async () => {
-    if (!token) return;
-
     try {
-      const { data } = await axios.get(`${API_URL}/notes`, {
+      const res = await axios.get("http://localhost:3002/notes", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      setNotes(data.notes);
+      setNotes(res.data);
     } catch (err) {
-      console.error("Failed to fetch notes:", err.response || err);
+      console.error("Failed to fetch notes", err);
     }
   };
 
-  /**
-   * Fetch notes when a token becomes available
-   * (e.g. after login)
-   */
   useEffect(() => {
-    if (token) fetchNotes();
-  }, [token]);
+    if (user) fetchNotes();
+  }, [user]);
 
-  /**
-   * Open modal for creating a new note
-   */
-  const handleCreateNote = () => {
-    setCurrentNote(null);
-    setShowNotes(true);
-    setModalOpen(true);
+  // Logout
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem("token");
+    window.location.href = "/login";
   };
 
-  /**
-   * Open modal for editing an existing note
-   */
-  const handleEditNote = (note) => {
-    setCurrentNote(note);
-    setShowNotes(true);
-    setModalOpen(true);
-  };
+  // Filter notes by search
+  const filteredNotes = notes.filter(
+    (note) =>
+      note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      note.content.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  /**
-   * Create a new note
-   */
-  const addNote = async (title, description) => {
-    if (!token) {
-      console.error("No token found, cannot add note!");
-      return;
-    }
-
-    try {
-      await axios.post(
-        `${API_URL}/notes`,
-        { title, description },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      fetchNotes();
-      closeModal();
-    } catch (err) {
-      console.error("Failed to add note:", err.response || err);
-    }
-  };
-
-  /**
-   * Update an existing note
-   */
-  const editNote = async (id, title, description) => {
-    if (!token) {
-      console.error("No token found, cannot edit note!");
-      return;
-    }
-
-    try {
-      await axios.put(
-        `${API_URL}/notes/${id}`,
-        { title, description },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      fetchNotes();
-      closeModal();
-    } catch (err) {
-      console.error("Failed to edit note:", err.response || err);
-    }
-  };
-
-  /**
-   * Delete a note by ID
-   */
-  const deleteNote = async (id) => {
-    if (!token) {
-      console.error("No token found, cannot delete note!");
-      return;
-    }
-
-    try {
-      await axios.delete(`${API_URL}/notes/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      fetchNotes();
-    } catch (err) {
-      console.error("Failed to delete note:", err.response || err);
-    }
-  };
+  if (!user) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Signup />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
 
   return (
-    // App-level routing
     <BrowserRouter>
-      <Routes>
-        {/* Redirect root to login */}
-        <Route path="/" element={<Navigate to="/login" />} />
-
-        {/* Auth routes */}
-        <Route path="/register" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-
-        {/* Protected Notepad Route */}
-        <Route
-          path="/notepad"
-          element={
-            token ? (
-              <div className="flex h-screen">
-                {/* Sidebar navigation */}
-                <Sidebar
-                  onViewAllNotes={() => setShowNotes(true)}
-                  onAddNote={handleCreateNote}
-                />
-
-                {/* Main content area */}
-                <div className="bg-purple-900 w-full relative">
-                  {/* Welcome screen */}
-                  {!showNotes && <WelcomeText />}
-
-                  {/* Notes list */}
-                  {showNotes && (
-                    <>
-                      {/* Search input */}
-                      <div className="px-8 pt-4">
-                        <input
-                          type="text"
-                          placeholder="Search notes..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full mb-6 p-3 text-white rounded border bg-transparent"
-                        />
-                      </div>
-
-                      {/* Notes grid */}
-                      <div className="px-8 pt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {notes
-                          .filter((note) =>
-                            note.title
-                              ?.toLowerCase()
-                              .includes(searchTerm.toLowerCase())
-                          )
-                          .map((note) => (
-                            <NoteCard
-                              key={note.id}
-                              note={note}
-                              onEdit={handleEditNote}
-                              deleteNote={deleteNote}
-                            />
-                          ))}
-                      </div>
-                    </>
-                  )}
-
-                  {/* Floating add note button */}
-                  <button
-                    onClick={handleCreateNote}
-                    className="fixed right-4 bottom-4 bg-white text-black text-2xl p-4 rounded shadow"
-                  >
-                    +
-                  </button>
-
-                  {/* Add/Edit Note Modal */}
-                  {isModalOpen && (
-                    <NotesModal
-                      closeModal={closeModal}
-                      addNote={addNote}
-                      editNote={editNote}
-                      currentNote={currentNote}
-                    />
-                  )}
-                </div>
-              </div>
-            ) : (
-              // Redirect unauthenticated users
-              <Navigate to="/login" />
-            )
-          }
+      {/* TOP BAR */}
+      <header className="w-full flex items-center justify-between px-6 py-4 border-b bg-white">
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="Search notes..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-1/2 rounded-md border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
-      </Routes>
+
+        {/* User Profile */}
+        <div className="relative">
+          <button
+            onClick={() => setProfileOpen((v) => !v)}
+            className="flex items-center gap-2 font-medium text-sm"
+          >
+            {user?.user_metadata?.name || "User"}
+          </button>
+
+          {profileOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-md p-3 text-sm">
+              <p className="font-semibold">
+                {user?.user_metadata?.name || "User"}
+              </p>
+              <p className="text-xs text-gray-500 mb-3">{user?.email}</p>
+
+              <button
+                onClick={handleLogout}
+                className="w-full text-left text-red-500 hover:bg-gray-100 px-2 py-1 rounded"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* MAIN CONTENT */}
+      <main className="p-6">
+        {!showNotes ? (
+          <WelcomeText onFinish={() => setShowNotes(true)} />
+        ) : (
+          <>
+            {/* Notes Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Create Note Card */}
+              <button
+                onClick={() => {
+                  setEditingNote(null);
+                  setIsModalOpen(true);
+                }}
+                className="border-2 border-dashed rounded-lg p-6 text-center hover:bg-gray-50"
+              >
+                + Create Note
+              </button>
+
+              {filteredNotes.map((note) => (
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  onEdit={(n) => {
+                    setEditingNote(n);
+                    setIsModalOpen(true);
+                  }}
+                  deleteNote={async (id) => {
+                    await axios.delete(
+                      `http://localhost:3002/notes/${id}`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                          )}`,
+                        },
+                      }
+                    );
+                    fetchNotes();
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </main>
+
+      {/* MODAL */}
+      {isModalOpen && (
+        <NotesModal
+          editingNote={editingNote}
+          closeModal={() => setIsModalOpen(false)}
+          refreshNotes={fetchNotes}
+        />
+      )}
     </BrowserRouter>
   );
 }
