@@ -1,37 +1,35 @@
 import { useEffect, useState } from "react";
 
 // This component shows a welcome message with a typing animation
-export default function WelcomeText() {
-  // The message that will be displayed
+export default function WelcomeText({ onFinish }) {
   const fullMessage = "Welcome to your private notebook";
-  // State managing 
   const [visibleMessage, setVisibleMessage] = useState("");
-  // useEffect runs after the component appears on the screen
+
   useEffect(() => {
     // Start at the first character
     let currentCharIndex = 0;
-    // setInterval runs this function repeatedly every 60 milliseconds
+
     const typingInterval = setInterval(() => {
-      // Add one more character from fullMessage to visibleMessage
       setVisibleMessage(fullMessage.slice(0, currentCharIndex + 1));
-      // Move to the next character
       currentCharIndex++;
-      // Stop the interval when the whole message is displayed
+
       if (currentCharIndex === fullMessage.length) {
         clearInterval(typingInterval);
+
+        // Small pause after typing finishes
+        setTimeout(() => {
+          onFinish?.(); // tell App.jsx we are done
+        }, 800);
       }
     }, 60);
 
-    //The interval stops once the component is removed
     return () => clearInterval(typingInterval);
-  }, []); // effect runs only once
+  }, [onFinish]);
 
   return (
-    <div className="h-full flex items-center justify-center">
-      <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-wide">
-        {/* Show the typing text */}
+    <div className="flex items-center justify-center">
+      <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-wide text-center">
         {visibleMessage}
-        {/* Add a blinking cursor effect */}
         <span className="animate-pulse">|</span>
       </h1>
     </div>
