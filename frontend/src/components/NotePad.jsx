@@ -3,10 +3,10 @@ import { useRef } from 'react'
 
 // NotePad component displays a form for writing notes, including a category and content
 export default function NotePad({ value, onChange, ...props }) {
-    // useRef is used to directly manipulate the DOM element (textarea)
+    //directly manipulate the DOM element (textarea)
     const ref = useRef();
 
-    // handleInput adjusts the height of the textarea as content grows
+    //adjusts the height of the textarea as content grows
     const handleInput = (e) => {
         // Reset the height to auto so scrollHeight recalculates correctly
         ref.current.style.height = "auto";
@@ -52,7 +52,7 @@ export default function NotePad({ value, onChange, ...props }) {
                                     ref={ref} //  manipulate height
                                     value={value} // controlled value from parent state
                                     onChange={handleInput} // update value and resize
-                                    onInput={handleInput} // also resize on input events
+                                    onInput={handleInput} // resize on input events
                                     {...props} // allow additional props like placeholder, className
                                     className="w-full rounded border p-3 resize-none overflow-hidden"
                                     style={{ minHeight: 48 }} // set minimum height

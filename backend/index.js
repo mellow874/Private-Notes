@@ -6,9 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-/**
- * REGISTER
- */
+/*REGISTER*/
 app.post("/register", async (req, res) => {
   const { email, password, name } = req.body;
 
@@ -25,9 +23,7 @@ app.post("/register", async (req, res) => {
   res.status(201).json({ message: "User registered", user: data.user });
 });
 
-/**
- * LOGIN
- */
+/*LOGIN*/
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -45,9 +41,7 @@ app.post("/login", async (req, res) => {
   });
 });
 
-/**
- * AUTH MIDDLEWARE (Supabase)
- */
+/*AUTH MIDDLEWARE (Supabase)*/
 const authMiddleware = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -61,9 +55,7 @@ const authMiddleware = async (req, res, next) => {
   next();
 };
 
-/**
- * CREATE NOTE
- */
+/*CREATE NOTE*/
 app.post("/notes", authMiddleware, async (req, res) => {
   console.log("RECEIVED BODY:", req.body);
 
@@ -71,7 +63,7 @@ app.post("/notes", authMiddleware, async (req, res) => {
 
   const { error } = await supabase.from("notes").insert({
     title,
-    content: description, // 🔥 FIX IS RIGHT HERE
+    content: description, //
     user_id: req.user.id,
   });
 
@@ -84,9 +76,7 @@ app.post("/notes", authMiddleware, async (req, res) => {
 });
 
 
-/**
- * GET NOTES
- */
+/*GET NOTES */
 app.get("/notes", authMiddleware, async (req, res) => {
   const { data, error } = await supabase
     .from("notes")
@@ -101,13 +91,8 @@ app.get("/notes", authMiddleware, async (req, res) => {
   res.json({ notes: data });
 });
 
-// Edit Notes
-/**
- * UPDATE NOTE
- */
-/**
- * UPDATE NOTE (Supabase)
- */
+// Editing and Upadting Notes (Supabase)*/
+
 app.put("/notes/:id", authMiddleware, async (req, res) => {
   const { id } = req.params;
   const { title, description } = req.body;
@@ -131,13 +116,8 @@ app.put("/notes/:id", authMiddleware, async (req, res) => {
 });
 
 
-// Delete Note
-/**
- * DELETE NOTE (Supabase)
- */
-/**
- * DELETE NOTE (Supabase)
- */
+/*DELETE NOTE (Supabase)*/
+
 app.delete("/notes/:id", authMiddleware, async (req, res) => {
   const { id } = req.params;
 

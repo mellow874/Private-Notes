@@ -4,10 +4,8 @@ import React, { useState, useEffect } from "react";
 function NotesModal({ closeModal, addNote, currentNote, editNote }) {
   // State to store the note's title
   const [title, setTitle] = useState('');
-
   // State to store the note's description/content
   const [description, setDescription] = useState('');
-
   // handleSubmit runs when the form is submitted
   const handleSubmit = (e) => {
     e.preventDefault(); // prevent page reload on form submit

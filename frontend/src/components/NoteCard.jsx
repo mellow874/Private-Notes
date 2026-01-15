@@ -6,15 +6,13 @@ function NoteCard({ note, onEdit, deleteNote }) {
   return (
     <div className="bg-white p-4 rounded-lg shadow flex flex-col justify-between h-full">
       {/* Container for the note card */}
-
-      {/* Title and Content Section */}
       <div>
         {/* Category label above the note title */}
         <label className="block text-xs font-semibold text-gray-500 mb-1">
           Category
         </label>
 
-        {/* Note title displayed inside a styled box */}
+        {/* Note title displayed inside a box */}
         <div className="w-full rounded-md bg-gray-50 px-3 py-2 text-sm font-medium text-gray-900">
           {note.title}
         </div>
