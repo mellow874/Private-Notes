@@ -11,7 +11,7 @@ import WelcomeText from "./components/WelcomeText";
 import { useAuth } from "./context/ContextProvider";
 import { supabase } from "./supabase";
 
-// 🌐 Set your backend URL once here
+//Backend URL
 const BACKEND_URL = "https://private-notes-dzpw.onrender.com";
 
 function NotepadPage() {
@@ -27,7 +27,7 @@ function NotepadPage() {
 
   const token = localStorage.getItem("token");
 
-  // 🔄 Fetch notes from backend
+  //Fetch notes from backend
   const fetchNotes = async () => {
     if (!token) return;
     try {
@@ -55,7 +55,7 @@ function NotepadPage() {
     setIsModalOpen(true);
   };
 
-  // ➕ Add note
+  //Add note
   const addNote = async (title, description) => {
     try {
       await axios.post(
@@ -71,7 +71,7 @@ function NotepadPage() {
     }
   };
 
-  // ✏️ Edit note
+  //Edit note
   const editNote = async (id, title, description) => {
     try {
       await axios.put(
@@ -87,7 +87,7 @@ function NotepadPage() {
     }
   };
 
-  // 🗑 Delete note
+  //Delete note
   const deleteNote = async (id) => {
     try {
       await axios.delete(`${BACKEND_URL}/notes/${id}`, {
